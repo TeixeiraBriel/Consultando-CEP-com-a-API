@@ -6,6 +6,7 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using RestSharp;
 
 namespace RequisicaoWebSimples
 {
@@ -89,6 +90,32 @@ namespace RequisicaoWebSimples
                 resposta.Close();
             }
         }
+        
+
+        public static void LogandoWowBrasil()
+        {
+            var client = new RestClient("http://www.wow-brasil.com/index.php?n=account/login&action=login");
+
+            client.Timeout = -1;
+
+            var request = new RestRequest(Method.POST);
+
+            request.AddHeader("Accept", " text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9");
+            request.AddHeader("Content-Type", "application/x-www-form-urlencoded");
+            //request.AddHeader("Host", " www.wow-brasil.com");
+            request.AddHeader("Origin", " http://www.wow-brasil.com");
+            request.AddHeader("Referer", " http://www.wow-brasil.com/index.php?n=account/login");
+
+            client.UserAgent = " Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36";
+
+            request.AddHeader("Cookie", "PHPSESSID=223143f3f8ed480e204cbe391f2367c4");
+
+            request.AddParameter("login", " xxbielgtxx");
+            request.AddParameter("pass", " gatinha123");
+
+            IRestResponse response = client.Execute(request);
+            Console.WriteLine(response.Content);
+        }
 
         static void Main(string[] args)
         {
@@ -114,6 +141,10 @@ namespace RequisicaoWebSimples
                 {
                     //Fazer Testes com HTMLAgilityPack
                     LerRequisicaoPOSTComLink("http://warcraftlivros.blogspot.com/2016/06/warcraft-ordem-cronologica-livros-hqs.html");
+                }
+                else if (i == 5)
+                {
+                    LogandoWowBrasil();
                 }
             }
         }
