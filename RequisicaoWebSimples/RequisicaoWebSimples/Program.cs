@@ -6,6 +6,9 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using HtmlAgilityPack;
+using System.Web;
+using Expando;
 
 namespace RequisicaoWebSimples
 {
@@ -90,10 +93,50 @@ namespace RequisicaoWebSimples
             }
         }
 
+
+        public static List<dynamic> UtilizandoHtmlLink()
+        {
+            dynamic anime = new {}; 
+            List<dynamic> _topAnimes = new List<dynamic>();
+
+            string link01 = "http://warcraftlivros.blogspot.com/2016/06/warcraft-ordem-cronologica-livros-hqs.html";
+            string link02 = "https://www.keroseed.com/post/category/2020/";
+            string link03 = "https://animesonline.cc/tv/";
+            var requisicaoWeb = WebRequest.CreateHttp(link03);
+            requisicaoWeb.Method = "GET";
+            requisicaoWeb.UserAgent = "RequisicaoWebDemo";
+
+            using (var resposta = requisicaoWeb.GetResponse())
+            {
+                var streamDados = resposta.GetResponseStream();
+                StreamReader reader = new StreamReader(streamDados);
+                object objResponse = reader.ReadToEnd();
+
+                //Console.WriteLine(objResponse.ToString());
+                //streamDados.Close();
+                //resposta.Close();
+
+                var doc = new HtmlDocument();
+
+                doc.LoadHtml(objResponse.ToString());
+                var dados = doc.DocumentNode.SelectNodes("//*[@class='w_item_b']");
+
+                foreach (var dado in dados)
+                {
+                    var TituloAnime = dado.SelectSingleNode(".//a//div[2]//h3").InnerText;
+                    var Ano = dado.SelectSingleNode(".//a//div[2]//span").InnerText;
+                    var Nota = dado.SelectSingleNode(".//a//div[2]//span[2]//b").InnerText;
+
+                    _topAnimes.Add(new { titulo = TituloAnime, ano = Ano, nota = Nota });
+                }
+                return _topAnimes;
+            }
+        }
+
         static void Main(string[] args)
         {
             int i = 10;
-            Console.WriteLine("0 - Sair || 1 - Ler Requisicão || 2 - Enviar Requisição || 3 - Ler Requisicão com Link");
+            Console.WriteLine("0 - Sair || 1 - Ler Requisicão || 2 - Enviar Requisição || 3 - Ler Requisicão com Link || 4 - Usar dados do GET");
             while (i != 0)
             {
                 i = int.Parse(Console.ReadLine());
@@ -112,8 +155,14 @@ namespace RequisicaoWebSimples
                 }
                 else if (i == 4)
                 {
-                    //Fazer Testes com HTMLAgilityPack
-                    LerRequisicaoPOSTComLink("http://warcraftlivros.blogspot.com/2016/06/warcraft-ordem-cronologica-livros-hqs.html");
+                    List<dynamic> topAnimes = UtilizandoHtmlLink();
+                    Console.WriteLine("Top animes:");
+                    int pos = 1;
+                    foreach (var anime in topAnimes)
+                    {
+                        Console.WriteLine(pos + "º: " + anime.titulo);
+                        pos++;
+                    }
                 }
             }
         }
