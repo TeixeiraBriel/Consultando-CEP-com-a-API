@@ -157,10 +157,15 @@ namespace RequisicaoWebSimples
                 {
                     List<dynamic> topAnimes = UtilizandoHtmlLink();
                     Console.WriteLine("Top animes:");
+                    Console.WriteLine("");
                     int pos = 1;
                     foreach (var anime in topAnimes)
                     {
-                        Console.WriteLine(pos + "º: " + anime.titulo);
+                        Console.WriteLine("------- " + pos + "º Lugar" + " -------");
+                        Console.WriteLine("Titulo: " + anime.titulo);
+                        Console.WriteLine("Ano Lançamento: " + anime.ano);
+                        Console.WriteLine("Nota: " + anime.nota);
+                        Console.WriteLine("");
                         pos++;
                     }
                 }
