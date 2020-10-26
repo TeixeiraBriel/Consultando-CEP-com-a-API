@@ -6,9 +6,7 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using HtmlAgilityPack;
-using System.Web;
-using Expando;
+using RestSharp;
 
 namespace RequisicaoWebSimples
 {
@@ -168,6 +166,10 @@ namespace RequisicaoWebSimples
                         Console.WriteLine("");
                         pos++;
                     }
+                }
+                else if (i == 5)
+                {
+                    LogandoWowBrasil();
                 }
             }
         }
